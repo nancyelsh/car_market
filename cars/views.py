@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import Car
 from .forms import CarForm
+
 
 def car_list(request):
 	cars = Car.objects.all()
@@ -23,6 +25,7 @@ def car_create(request):
 	if request.method == "POST":
 		form = CarForm(request.POST, request.FILES)
 		if form.is_valid():
+			messages.add_message(request, messages.INFO, 'A new car profile has been created!')
 			form.save()
 			return redirect('car-list')
 	context = {
@@ -37,6 +40,7 @@ def car_update(request, car_id):
 	if request.method == "POST":
 		form = CarForm(request.POST, request.FILES, instance=car_obj)
 		if form.is_valid():
+			messages.add_message(request, messages.INFO, 'A car profile has been updated!')
 			form.save()
 			return redirect('car-list')
 	context = {
@@ -47,5 +51,7 @@ def car_update(request, car_id):
 
 def car_delete(request, car_id):
 	car_obj = Car.objects.get(id=car_id)
+	messages.add_message(request, messages.INFO, 'A car profile has been deleted!')
 	car_obj.delete()
 	return redirect('car-list')
+
